@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">HeyAlle</string>
+
+<!--  info screen-->
+
+    <string name="title_collections_label">Collections</string>
+    <string name="title_description">Description</string>
+    <string name="description_default"> No Description found for image</string>
+    <string name="app_needs_storage_permission_to_work">App needs storage permission to work</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="grant_permission">Grant permission</string>
+
+</resources>
