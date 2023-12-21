@@ -1,20 +1,13 @@
 package com.shetty.heyalle.domain.usecase
 
-import android.graphics.BitmapFactory
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.label.ImageLabeling
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import android.content.SharedPreferences
 import com.shetty.heyalle.data.local.ImageRepository
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-
 
 
 class ScreenshotUseCaseImpl @Inject constructor(
-    private val repo: ImageRepository
+    private val repo: ImageRepository,
+    private val pref: SharedPreferences
 ) : ScreenshotUseCase {
 
 
@@ -22,6 +15,13 @@ class ScreenshotUseCaseImpl @Inject constructor(
         return repo.getImages()
     }
 
+    override fun saveNote(note: String, uri: String) {
+        pref.edit().putString(uri, note).apply()
+    }
+
+    override fun getNote(uri: String): String {
+        return pref.getString(uri, "") ?: ""
+    }
 
 
 }

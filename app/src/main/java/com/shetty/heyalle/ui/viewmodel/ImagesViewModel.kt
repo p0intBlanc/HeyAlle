@@ -65,6 +65,14 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
+    fun getNotesForImage(uri: String): String {
+        return imagesUseCase.getNote(uri)
+    }
+
+    fun saveNotesForImage(uri: String, note: String) {
+        return imagesUseCase.saveNote(note, uri)
+    }
+
     fun permissionsGranted(isGranted: Boolean) {
         if (isGranted) {
             getImages()
@@ -77,9 +85,9 @@ class ImagesViewModel @Inject constructor(
         val image = File(uri)
         if (image.exists()) {
             if (image.delete()) {
-                System.out.println("file Deleted :$uri");
+                System.out.println("file Deleted :$uri")
             } else {
-                System.out.println("file not Deleted :$uri");
+                System.out.println("file not Deleted :$uri")
             }
         }
     }

@@ -2,6 +2,7 @@ package com.shetty.heyalle.di
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,13 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun getDataSource(@ApplicationContext  context:Context):ContentResolver{
+    fun getDataSource(@ApplicationContext context: Context): ContentResolver {
         return context.contentResolver
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("alle_prefs", Context.MODE_PRIVATE)
     }
 }

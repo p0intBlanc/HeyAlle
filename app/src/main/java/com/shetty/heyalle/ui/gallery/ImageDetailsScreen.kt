@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalLayoutApi::class)
+@file:OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
 
 package com.shetty.heyalle.ui.gallery
 
@@ -8,16 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +43,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.shetty.heyalle.R
 import com.shetty.heyalle.ui.viewmodel.ImagesViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,15 +78,23 @@ fun InfoScreen(viewModel: ImagesViewModel) {
                 .height(500.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        var text by rememberSaveable { mutableStateOf("Text") }
+        val savedNote = viewModel.getNotesForImage(selectedImageUri)
+        var text by rememberSaveable { mutableStateOf(savedNote) }
         OutlinedTextField(
-            value = text, onValueChange = {
+            value = text,
+            maxLines = 4,
+            onValueChange = {
                 text = it
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
+        LaunchedEffect(key1 = text) {
+            if (text.isBlank()) return@LaunchedEffect
+            delay(500)
+            viewModel.saveNotesForImage(selectedImageUri, text)
+        }
         CollectionsWidget(collections)
         DescriptionWidget(description = description)
     }
