@@ -3,6 +3,7 @@ package com.shetty.heyalle.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shetty.heyalle.domain.usecase.GoogleVisionUsecase
 import com.shetty.heyalle.domain.usecase.ScreenshotUseCase
 import com.shetty.heyalle.ui.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImagesViewModel @Inject constructor(
-    private val useCase: ScreenshotUseCase
+    private val imagesUseCase: ScreenshotUseCase,
+    private val mlUsecase: GoogleVisionUsecase
 ) : ViewModel() {
     private val TAG = "ImagesViewModel"
 
@@ -33,7 +35,7 @@ class ImagesViewModel @Inject constructor(
 
     fun getImages() {
         viewModelScope.launch {
-            val data = useCase.getImagesFromGallery()
+            val data = imagesUseCase.getImagesFromGallery()
             Log.i(TAG, "getImages: $data")
             _state.value = UIState.Success(data)
             if (data.isEmpty().not())
@@ -47,7 +49,7 @@ class ImagesViewModel @Inject constructor(
 
     fun fetchCollectionsForImage(imageUri: String) {
         viewModelScope.launch {
-            useCase.fetchCollection(imageUri).let {
+            mlUsecase.fetchCollection(imageUri).let {
                 _collectionLabels.value = it
             }
         }
@@ -55,7 +57,7 @@ class ImagesViewModel @Inject constructor(
 
     fun fetchDescriptionForImage(imageUri: String) {
         viewModelScope.launch {
-            useCase.fetchDescription(imageUri).let {
+            mlUsecase.fetchDescription(imageUri).let {
                 _imageDescription.value = it.ifBlank {
                     "No Description found for image"
                 }
